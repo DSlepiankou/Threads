@@ -9,18 +9,21 @@ public partial class HomePage : ContentPage
 {
     public HomePage()
     {
-        var listView = new ListView(ListViewCachingStrategy.RecycleElement)
+        var listView = new ListView(ListViewCachingStrategy.RetainElement)
         {
             HasUnevenRows = true,
             ItemTemplate = new DataTemplate(typeof(ThreadCell)),
+            IsPullToRefreshEnabled = true,
+            
             ItemsSource = new[] {
+
                 new AThread {
                     User = "Dima",
-                    Message = "Some msg2",
+                    Message = "asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd",
                     IsVerified = false,
                     Likes = 10,
                     Image = "profile.png",
-                    Repilies=10,
+                    Replies=10,
                     TimeAgo="2 min"
                 },
                 new AThread {
@@ -28,7 +31,7 @@ public partial class HomePage : ContentPage
                     Message = "Some msg2",
                     IsVerified = true,
                     Likes = 11,
-                    Repilies=10,
+                    Replies=10,
                     TimeAgo="3 min",
                     Image = "profile.png"
                 },
@@ -37,7 +40,7 @@ public partial class HomePage : ContentPage
                     Message = "Some msg3",
                     IsVerified = false,
                     Likes = 12,
-                    Repilies=10,
+                    Replies=10,
                     TimeAgo="4 min",
                     Image = "profile.png"
                 }
@@ -45,7 +48,7 @@ public partial class HomePage : ContentPage
         };
 
         Content = listView;
-        Padding = 10;
+        //Padding = 10;
     }
 
     public partial class AThread : ObservableObject
@@ -60,47 +63,47 @@ public partial class HomePage : ContentPage
         string image;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasLikes))]
         int likes;
 
         [ObservableProperty]
-        int repilies;
+        [NotifyPropertyChangedFor(nameof(HasReplies))]
+
+        int replies;
 
         [ObservableProperty]
         bool isVerified;
 
         [ObservableProperty]
         string timeAgo;
+
+        public bool HasReplies => Replies > 0;
+        public bool HasLikes => Likes > 0;
+    }
+
+    public class HorizontalStackLayoutSpaced : HorizontalStackLayout
+    {
+        public HorizontalStackLayoutSpaced(int spacing = 10)
+        {
+            Spacing = spacing;
+
+        }
     }
 
     public class ThreadCell : ViewCell
     {
         public ThreadCell()
         {
-            var icons = new HorizontalStackLayout()
-            {
-                new Label()
-                    .Text(FontAwesomeIcons.Heart)
-                    .Font("FAS"),
-                new Label()
-                    .Text(FontAwesomeIcons.Comment)
-                    .Font("FAS"),
-                new Label()
-                    .Text(FontAwesomeIcons.Retweet)
-                    .Font("FAS"),
-                new Label()
-                    .Text(FontAwesomeIcons.PaperPlane)
-                    .Font("FAS"),
-
-            };
-
             View = new Grid
             {
                 ColumnDefinitions = Columns.Define(Auto, Star, Auto, Auto),
-                RowDefinitions = Rows.Define(Auto, Star, 60, 50),
+                RowDefinitions = Rows.Define(Auto, Star, Auto, Auto),
                 ColumnSpacing = 10,
                 RowSpacing = 5,
+                Padding = 10,
                 Children =
                 {
+
                     new Image()
                         .Bind(Image.SourceProperty, nameof(AThread.Image))
                         .Height(35).Width(35)
@@ -111,12 +114,19 @@ public partial class HomePage : ContentPage
                         .CenterVertical()
                         .Margin(new Thickness(0,10,0,0))
                         .Aspect(Aspect.AspectFill),
-
-                    new Label()
-                        .Bind(Label.TextProperty,nameof(AThread.User))
-                        .Row(0).Column(1)
-                        .Bold()
-                        .Bottom(),
+                    new HorizontalStackLayoutSpaced
+                    {
+                        new Label()
+                            .Bind(Label.TextProperty,nameof(AThread.User))
+                            .Bold()
+                            .Bottom(),
+                        new Label()
+                            .Text(FontAwesomeIcons.CircleCheck)
+                            .Font("FAS")
+                            .TextColor(Colors.Blue)
+                            .Bind(Label.IsVisibleProperty, nameof(AThread.IsVerified))
+                            .Bottom()
+                    }.Row(0).Column(1),
 
                     new Label()
                         .Bind(Label.TextProperty,nameof(AThread.TimeAgo))
@@ -134,8 +144,39 @@ public partial class HomePage : ContentPage
                         .Bind(Label.TextProperty, nameof(AThread.Message))
                         .Row(1).Column(1)
                         .ColumnSpan(3),
+                    new HorizontalStackLayoutSpaced
+                    {
+                        new Label()
+                            .Text(FontAwesomeIcons.Heart)
+                            .Font("FAS")
+                            .FontSize(15),
+                        new Label()
+                            .Text(FontAwesomeIcons.Comment)
+                            .Font("FAS")
+                            .FontSize(15),
+                        new Label()
+                            .Text(FontAwesomeIcons.Retweet)
+                            .Font("FAS")
+                            .FontSize(15),
+                        new Label()
+                            .Text(FontAwesomeIcons.PaperPlane)
+                            .Font("FAS")
+                            .FontSize(15),
+                    }.Row(2).Column(1),
 
-                    icons.Row(2).Column(1),
+                    new HorizontalStackLayoutSpaced
+                    {
+                        new Label()
+                            .Bind(Label.TextProperty, nameof(AThread.Replies),stringFormat:"{0} replies")
+                            .Bind(Label.IsVisibleProperty, nameof(AThread.HasReplies))
+                            .CenterVertical(),
+                        new Label()
+                            .Bind(Label.TextProperty, nameof(AThread.Likes),stringFormat:"{0} likes")
+                            .Bind(Label.IsVisibleProperty, nameof(AThread.HasLikes))
+                            .CenterVertical()
+                    }.Row(3).Column(1).ColumnSpan(3),
+
+
                 }
             };
         }
