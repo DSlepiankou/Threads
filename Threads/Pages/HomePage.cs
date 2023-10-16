@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Threads.Controls;
 using Threads.Helpers;
 using static CommunityToolkit.Maui.Markup.GridRowsColumns;
 
@@ -81,15 +82,6 @@ public partial class HomePage : ContentPage
         public bool HasLikes => Likes > 0;
     }
 
-    public class HorizontalStackLayoutSpaced : HorizontalStackLayout
-    {
-        public HorizontalStackLayoutSpaced(int spacing = 10)
-        {
-            Spacing = spacing;
-
-        }
-    }
-
     public class ThreadCell : ViewCell
     {
         const int iconSize = 20;
@@ -121,9 +113,7 @@ public partial class HomePage : ContentPage
                             .Bind(Label.TextProperty,nameof(AThread.User))
                             .Bold()
                             .Bottom(),
-                        new Label()
-                            .Text(FontAwesomeIcons.CircleCheck)
-                            .Font("FAS")
+                        new FontAwesomeLabel(FontAwesomeStyle.Solid, FontAwesomeIcons.CircleCheck)
                             .TextColor(Colors.Blue)
                             .Bind(Label.IsVisibleProperty, nameof(AThread.IsVerified))
                             .Bottom()
@@ -135,33 +125,24 @@ public partial class HomePage : ContentPage
                         .Bold()
                         .Bottom(),
 
-                    new Label()
-                        .Text(FontAwesomeIcons.Ellipsis)
-                        .Font("FAS")
+                    new FontAwesomeLabel(FontAwesomeStyle.Solid, FontAwesomeIcons.Ellipsis)
                         .Row(0).Column(3)
                         .Bottom(),
 
                     new Label()
                         .Bind(Label.TextProperty, nameof(AThread.Message))
                         .Row(1).Column(1)
+                        .Padding(1)
                         .ColumnSpan(3),
                     new HorizontalStackLayoutSpaced
                     {
-                        new Label()
-                            .Text(FontAwesomeIcons.Heart)
-                            .Font("FAR")
+                        new FontAwesomeLabel(FontAwesomeStyle.Regular, FontAwesomeIcons.Heart)
                             .FontSize(iconSize),
-                        new Label()
-                            .Text(FontAwesomeIcons.Comment)
-                            .Font("FAR")
+                        new FontAwesomeLabel(FontAwesomeStyle.Regular, FontAwesomeIcons.Comment)
                             .FontSize(iconSize),
-                        new Label()
-                            .Text(FontAwesomeIcons.Retweet)
-                            .Font("FAS")
+                        new FontAwesomeLabel(FontAwesomeStyle.Solid, FontAwesomeIcons.Retweet)
                             .FontSize(iconSize),
-                        new Label()
-                            .Text(FontAwesomeIcons.PaperPlane)
-                            .Font("FAR")
+                        new FontAwesomeLabel(FontAwesomeStyle.Regular, FontAwesomeIcons.PaperPlane)
                             .FontSize(iconSize),
                     }.Row(2).Column(1),
 
@@ -176,8 +157,6 @@ public partial class HomePage : ContentPage
                             .Bind(Label.IsVisibleProperty, nameof(AThread.HasLikes))
                             .CenterVertical()
                     }.Row(3).Column(1).ColumnSpan(3),
-
-
                 }
             };
         }
