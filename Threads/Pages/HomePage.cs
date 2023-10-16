@@ -14,13 +14,14 @@ public partial class HomePage : ContentPage
             HasUnevenRows = true,
             ItemTemplate = new DataTemplate(typeof(ThreadCell)),
             IsPullToRefreshEnabled = true,
-            
+            SelectionMode = ListViewSelectionMode.None,
+            SeparatorVisibility = SeparatorVisibility.None,
             ItemsSource = new[] {
 
                 new AThread {
-                    User = "Dima",
+                    User = "Dima Slepiankou",
                     Message = "asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd",
-                    IsVerified = false,
+                    IsVerified = true,
                     Likes = 10,
                     Image = "profile.png",
                     Replies=10,
@@ -48,7 +49,6 @@ public partial class HomePage : ContentPage
         };
 
         Content = listView;
-        //Padding = 10;
     }
 
     public partial class AThread : ObservableObject
@@ -92,12 +92,13 @@ public partial class HomePage : ContentPage
 
     public class ThreadCell : ViewCell
     {
+        const int iconSize = 20;
         public ThreadCell()
         {
             View = new Grid
             {
                 ColumnDefinitions = Columns.Define(Auto, Star, Auto, Auto),
-                RowDefinitions = Rows.Define(Auto, Star, Auto, Auto),
+                RowDefinitions = Rows.Define(Auto, Auto, Auto, Auto),
                 ColumnSpacing = 10,
                 RowSpacing = 5,
                 Padding = 10,
@@ -114,7 +115,7 @@ public partial class HomePage : ContentPage
                         .CenterVertical()
                         .Margin(new Thickness(0,10,0,0))
                         .Aspect(Aspect.AspectFill),
-                    new HorizontalStackLayoutSpaced
+                    new HorizontalStackLayoutSpaced(5)
                     {
                         new Label()
                             .Bind(Label.TextProperty,nameof(AThread.User))
@@ -148,20 +149,20 @@ public partial class HomePage : ContentPage
                     {
                         new Label()
                             .Text(FontAwesomeIcons.Heart)
-                            .Font("FAS")
-                            .FontSize(15),
+                            .Font("FAR")
+                            .FontSize(iconSize),
                         new Label()
                             .Text(FontAwesomeIcons.Comment)
-                            .Font("FAS")
-                            .FontSize(15),
+                            .Font("FAR")
+                            .FontSize(iconSize),
                         new Label()
                             .Text(FontAwesomeIcons.Retweet)
                             .Font("FAS")
-                            .FontSize(15),
+                            .FontSize(iconSize),
                         new Label()
                             .Text(FontAwesomeIcons.PaperPlane)
-                            .Font("FAS")
-                            .FontSize(15),
+                            .Font("FAR")
+                            .FontSize(iconSize),
                     }.Row(2).Column(1),
 
                     new HorizontalStackLayoutSpaced
