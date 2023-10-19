@@ -25,14 +25,15 @@
         <Tab>
             <Tab.Icon>
                 <FontImageSource FontFamily="FAS"
-                        Color="{AppThemeBinding
-                              Dark=White,
-                              Light={StaticResource SystemGray5Dark}}"
-                         Glyph="{x:Static fontAwesome:FontAwesomeIcons.MagnifyingGlass}"/>
+                    Color="{AppThemeBinding
+                            Dark=White,
+                            Light={StaticResource SystemGray5Dark}}"
+                        Glyph="{x:Static fontAwesome:FontAwesomeIcons.MagnifyingGlass}"/>
             </Tab.Icon>
             <ShellContent
-                        ContentTemplate="{DataTemplate pages:SearchPage}"
-                        Route="SearchPage" />
+                Title="Search"
+                ContentTemplate="{DataTemplate pages:SearchPage}"
+                Route="SearchPage" />
         </Tab>
         
         <Tab>
